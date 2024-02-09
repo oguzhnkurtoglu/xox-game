@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import orjGameMap from '../GameMap'
 
-const GameBoard = () => {
+const GameBoard = ({ currentPlayer, activePlayer, addLog }) => {
 	const [GameMap, setGameMap] = useState(orjGameMap)
+	const copiedGameMap = GameMap.map((innerArray) => [...innerArray])
 
-	const play = (row, cell) => {
-		setGameMap((prev) => {
-			const newGameMap = prev.map((item) => [...item])
-			newGameMap[row][cell] = 'X'
-			return newGameMap
-		})
+	const play = (rowIdx, cellIdx, activePlayer) => {
+		copiedGameMap[rowIdx][cellIdx] = activePlayer
+		setGameMap(() => copiedGameMap)
+		currentPlayer()
+		const log = `${activePlayer} Played to ${rowIdx} ${cellIdx}`
+		addLog(log)
 	}
-
 	return (
 		<ol id='game-board'>
 			{GameMap.map((row, rowIdx) => (
@@ -19,7 +19,7 @@ const GameBoard = () => {
 					<ol>
 						{row.map((playerSymbol, cellIdx) => (
 							<li key={cellIdx}>
-								<button onClick={() => play(rowIdx, cellIdx)}>
+								<button onClick={() => play(rowIdx, cellIdx, activePlayer)}>
 									{playerSymbol}
 								</button>
 							</li>
